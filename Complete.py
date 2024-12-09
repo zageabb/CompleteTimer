@@ -1,41 +1,5 @@
 import streamlit as st
 import time
-import threading
-
-def countdown_timer(total_seconds, countdown_placeholder):
-    for remaining in range(total_seconds, -1, -1):
-        mins, secs = divmod(remaining, 60)
-        hrs, mins = divmod(mins, 60)
-        timer_display = f"{hrs:02}:{mins:02}:{secs:02}"
-
-        # Display countdown timer in large font
-        countdown_placeholder.markdown(
-            f"<h1 style='text-align: center; font-size: 72px;'>{timer_display}</h1>",
-            unsafe_allow_html=True,
-        )
-
-        time.sleep(1)
-
-    countdown_placeholder.markdown(
-        "<h1 style='text-align: center; font-size: 72px;'>Time's up!</h1>",
-        unsafe_allow_html=True,
-    )
-
-def count_up_timer(countup_placeholder):
-    start_time = time.time()
-    while True:
-        elapsed = int(time.time() - start_time)
-        mins, secs = divmod(elapsed, 60)
-        hrs, mins = divmod(mins, 60)
-        timer_display = f"{hrs:02}:{mins:02}:{secs:02}"
-
-        # Display count up timer in large font
-        countup_placeholder.markdown(
-            f"<h1 style='text-align: center; font-size: 72px;'>{timer_display}</h1>",
-            unsafe_allow_html=True,
-        )
-
-        time.sleep(1)
 
 # Streamlit app setup
 st.title("Large Number Timer")
@@ -52,9 +16,38 @@ if st.button("Start Timers"):
     countdown_placeholder = st.empty()
     countup_placeholder = st.empty()
 
-    # Run countdown and count up timers concurrently
-    countdown_thread = threading.Thread(target=countdown_timer, args=(total_seconds, countdown_placeholder))
-    countup_thread = threading.Thread(target=count_up_timer, args=(countup_placeholder,))
+    countdown_start = time.time()
+    countup_start = time.time()
 
-    countdown_thread.start()
-    countup_thread.start()
+    while total_seconds >= 0:
+        # Countdown timer logic
+        elapsed_countdown = int(time.time() - countdown_start)
+        remaining_seconds = total_seconds - elapsed_countdown
+        if remaining_seconds < 0:
+            countdown_display = "Time's up!"
+        else:
+            mins, secs = divmod(remaining_seconds, 60)
+            hrs, mins = divmod(mins, 60)
+            countdown_display = f"{hrs:02}:{mins:02}:{secs:02}"
+
+        # Count-up timer logic
+        elapsed_countup = int(time.time() - countup_start)
+        mins, secs = divmod(elapsed_countup, 60)
+        hrs, mins = divmod(mins, 60)
+        countup_display = f"{hrs:02}:{mins:02}:{secs:02}"
+
+        # Update the display
+        countdown_placeholder.markdown(
+            f"<h1 style='text-align: center; font-size: 72px;'>{countdown_display}</h1>",
+            unsafe_allow_html=True,
+        )
+
+        countup_placeholder.markdown(
+            f"<h1 style='text-align: center; font-size: 72px;'>{countup_display}</h1>",
+            unsafe_allow_html=True,
+        )
+
+        time.sleep(1)
+
+        if remaining_seconds < 0:
+            break
