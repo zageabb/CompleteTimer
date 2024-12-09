@@ -4,12 +4,14 @@ import time
 # Streamlit app setup
 st.title("Large Number Timer")
 
-# Timer settings
-st.subheader("Timers")
-hours = st.number_input("Hours:", min_value=0, value=0, step=1, key="timer_hours")
-minutes = st.number_input("Minutes:", min_value=0, max_value=59, value=0, step=1, key="timer_minutes")
-seconds = st.number_input("Seconds:", min_value=0, max_value=59, value=0, step=1, key="timer_seconds")
+# Create a sidebar for inputs
+with st.sidebar:
+    st.subheader("Timers")
+    hours = st.number_input("Hours:", min_value=0, value=0, step=1, key="timer_hours")
+    minutes = st.number_input("Minutes:", min_value=0, max_value=59, value=0, step=1, key="timer_minutes")
+    seconds = st.number_input("Seconds:", min_value=0, max_value=59, value=0, step=1, key="timer_seconds")
 
+# Calculate total time in seconds
 total_seconds = int(hours * 3600 + minutes * 60 + seconds)
 
 if st.button("Start Timers"):
